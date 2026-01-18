@@ -1,0 +1,365 @@
+<Window x:Class="RobloxToolkit.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Roblox Toolkit" Height="700" Width="1000"
+        Background="{StaticResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Grid Margin="20,0">
+                <TextBlock Text="🎮 Roblox Toolkit" FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatusText" Text="Ready" Foreground="{StaticResource SuccessBrush}"
+                               FontSize="14" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                    <Ellipse x:Name="StatusIndicator" Width="12" Height="12" Fill="{StaticResource SuccessBrush}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <TabControl Grid.Row="1" Margin="10">
+            <!-- Auto Clicker Tab -->
+            <TabItem Header="Auto Clicker">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- CPS Control -->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                            <TextBlock Text="Clicks Per Second (CPS)" Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider x:Name="CpsSlider" Grid.Column="0" Minimum="1" Maximum="500" Value="10"
+                                        TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center"
+                                        Style="{StaticResource ModernSlider}" ValueChanged="CpsSlider_ValueChanged"/>
+                                <TextBox x:Name="CpsTextBox" Grid.Column="1" Text="10" Margin="10,0,0,0"
+                                         Style="{StaticResource ModernTextBox}" TextAlignment="Center"
+                                         PreviewTextInput="NumericTextBox_PreviewTextInput" TextChanged="CpsTextBox_TextChanged"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Click Delay -->
+                        <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                            <TextBlock Text="Click Delay (milliseconds)" Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Min Delay (ms)" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
+                                    <TextBox x:Name="MinDelayTextBox" Text="0" Style="{StaticResource ModernTextBox}"
+                                             PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="Max Delay (ms)" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
+                                    <TextBox x:Name="MaxDelayTextBox" Text="0" Style="{StaticResource ModernTextBox}"
+                                             PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+                                </StackPanel>
+                            </Grid>
+                            <CheckBox x:Name="RandomDelayCheckBox" Content="Enable random delay (more human-like)"
+                                      Margin="0,10,0,0" Checked="RandomDelayCheckBox_Checked" Unchecked="RandomDelayCheckBox_Unchecked"/>
+                        </StackPanel>
+
+                        <!-- Click Options -->
+                        <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                            <TextBlock Text="Click Options" Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <ComboBox x:Name="MouseButtonComboBox" SelectedIndex="0" Margin="0,0,0,10">
+                                <ComboBoxItem Content="Left Click"/>
+                                <ComboBoxItem Content="Right Click"/>
+                                <ComboBoxItem Content="Middle Click"/>
+                            </ComboBox>
+                            <CheckBox x:Name="HoldModeCheckBox" Content="Hold mode (hold instead of click)"/>
+                        </StackPanel>
+
+                        <!-- Hotkey -->
+                        <StackPanel Grid.Row="3" Margin="0,0,0,20">
+                            <TextBlock Text="Toggle Hotkey" Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <TextBox x:Name="HotkeyTextBox" Text="F6" Style="{StaticResource ModernTextBox}"
+                                     IsReadOnly="True" PreviewKeyDown="HotkeyTextBox_PreviewKeyDown"/>
+                        </StackPanel>
+
+                        <!-- Control Buttons -->
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,20">
+                            <Button x:Name="StartClickerButton" Content="Start Clicker (F6)"
+                                    Style="{StaticResource ModernButton}" Width="150" Margin="0,0,10,0"
+                                    Click="StartClickerButton_Click"/>
+                            <Button x:Name="StopClickerButton" Content="Stop Clicker"
+                                    Style="{StaticResource ModernButton}" Width="150" IsEnabled="False"
+                                    Click="StopClickerButton_Click"/>
+                        </StackPanel>
+
+                        <!-- Stats Display -->
+                        <Border Grid.Row="5" Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="20" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="Statistics" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Current CPS" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                                        <TextBlock x:Name="CurrentCpsText" Text="0" Foreground="{StaticResource AccentBrush}"
+                                                   FontSize="28" FontWeight="Bold"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Total Clicks" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                                        <TextBlock x:Name="TotalClicksText" Text="0" Foreground="{StaticResource AccentBrush}"
+                                                   FontSize="28" FontWeight="Bold"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Running Time" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                                        <TextBlock x:Name="RunningTimeText" Text="00:00:00" Foreground="{StaticResource AccentBrush}"
+                                                   FontSize="28" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Macro Recorder Tab -->
+            <TabItem Header="Macro Recorder">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Control Buttons -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                        <Button x:Name="RecordMacroButton" Content="⏺ Record" Style="{StaticResource ModernButton}"
+                                Width="120" Margin="0,0,10,0" Click="RecordMacroButton_Click"/>
+                        <Button x:Name="StopRecordingButton" Content="⏹ Stop" Style="{StaticResource ModernButton}"
+                                Width="120" Margin="0,0,10,0" IsEnabled="False" Click="StopRecordingButton_Click"/>
+                        <Button x:Name="PlayMacroButton" Content="▶ Play" Style="{StaticResource ModernButton}"
+                                Width="120" Margin="0,0,10,0" Click="PlayMacroButton_Click"/>
+                        <Button x:Name="SaveMacroButton" Content="💾 Save" Style="{StaticResource ModernButton}"
+                                Width="120" Margin="0,0,10,0" Click="SaveMacroButton_Click"/>
+                        <Button x:Name="LoadMacroButton" Content="📁 Load" Style="{StaticResource ModernButton}"
+                                Width="120" Click="LoadMacroButton_Click"/>
+                    </StackPanel>
+
+                    <!-- Macro Timeline -->
+                    <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="Recorded Actions" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                <ListBox x:Name="MacroActionsListBox" Background="Transparent"
+                                         BorderThickness="0" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Playback Options -->
+                    <StackPanel Grid.Row="2" Margin="0,20,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="Loop Count (0 = infinite)" Foreground="{StaticResource TextSecondaryBrush}"
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="LoopCountTextBox" Text="1" Style="{StaticResource ModernTextBox}"
+                                         PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="Playback Speed (%)" Foreground="{StaticResource TextSecondaryBrush}"
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="PlaybackSpeedTextBox" Text="100" Style="{StaticResource ModernTextBox}"
+                                         PreviewTextInput="NumericTextBox_PreviewTextInput"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- Roblox Integration Tab -->
+            <TabItem Header="Roblox Integration">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Process Detection -->
+                        <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="20" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="Roblox Process Detection" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Status:" Foreground="{StaticResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Grid.Column="1" x:Name="RobloxStatusText" Text="Not Running"
+                                               Foreground="{StaticResource ErrorBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                </Grid>
+                                <CheckBox x:Name="AutoDetectCheckBox" Content="Enable auto-detection of RobloxPlayerBeta.exe"
+                                          Margin="0,15,0,0" IsChecked="True"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Auto-Activation -->
+                        <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                            <TextBlock Text="Auto-Activation Settings" Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="AutoActivateClickerCheckBox" Content="Auto-start clicker when Roblox starts"
+                                      Margin="0,0,0,5"/>
+                            <CheckBox x:Name="AutoActivateMacroCheckBox" Content="Auto-play selected macro when Roblox starts"
+                                      Margin="0,0,0,5"/>
+                            <CheckBox x:Name="ShowNotificationCheckBox" Content="Show notification when Roblox is detected"
+                                      IsChecked="True"/>
+                        </StackPanel>
+
+                        <!-- Roblox Mode -->
+                        <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                            <TextBlock Text="Roblox Window Focus Mode" Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="RobloxFocusModeCheckBox"
+                                      Content="Only click/run macros when Roblox window is active"
+                                      Margin="0,0,0,5"/>
+                            <TextBlock Text="This prevents accidental clicks outside of Roblox"
+                                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"
+                                       Margin="25,5,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <!-- Saved Macros -->
+                        <Border Grid.Row="3" Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="20">
+                            <StackPanel>
+                                <TextBlock Text="Default Macro for Auto-Play" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                <ComboBox x:Name="DefaultMacroComboBox">
+                                    <ComboBoxItem Content="None" IsSelected="True"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- FPS/Ping Optimizer Tab -->
+            <TabItem Header="Optimizer">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Process Priority -->
+                        <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="20" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="Process Priority Optimization" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                                <Button x:Name="SetHighPriorityButton" Content="Set Roblox to High Priority"
+                                        Style="{StaticResource ModernButton}" HorizontalAlignment="Left"
+                                        Click="SetHighPriorityButton_Click"/>
+                                <TextBlock Text="Gives Roblox more CPU resources for better performance"
+                                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"
+                                           Margin="0,10,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Cache Cleanup -->
+                        <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="20" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="Cache & Temp Files Cleanup" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                                <Button x:Name="ClearCacheButton" Content="Clear Temp Files & Cache"
+                                        Style="{StaticResource ModernButton}" HorizontalAlignment="Left"
+                                        Click="ClearCacheButton_Click"/>
+                                <TextBlock Text="Frees up disk space and can improve loading times"
+                                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"
+                                           Margin="0,10,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Background Apps -->
+                        <Border Grid.Row="2" Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="20" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="Background Apps Manager" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                                <Button x:Name="ScanAppsButton" Content="Scan High-RAM Apps"
+                                        Style="{StaticResource ModernButton}" HorizontalAlignment="Left" Margin="0,0,0,10"
+                                        Click="ScanAppsButton_Click"/>
+                                <ListBox x:Name="HighRamAppsListBox" Background="Transparent" BorderThickness="0"
+                                         Foreground="{StaticResource TextPrimaryBrush}" Height="150"/>
+                                <Button x:Name="KillSelectedAppsButton" Content="Kill Selected Apps"
+                                        Style="{StaticResource ModernButton}" HorizontalAlignment="Left" Margin="0,10,0,0"
+                                        Click="KillSelectedAppsButton_Click" IsEnabled="False"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Network Tweaks -->
+                        <Border Grid.Row="3" Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="20">
+                            <StackPanel>
+                                <TextBlock Text="Network Optimization" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                                <CheckBox x:Name="DisableNagleCheckBox" Content="Disable Nagle's Algorithm (reduce latency)"
+                                          Margin="0,0,0,10"/>
+                                <Button x:Name="ApplyNetworkTweaksButton" Content="Apply Network Tweaks"
+                                        Style="{StaticResource ModernButton}" HorizontalAlignment="Left"
+                                        Click="ApplyNetworkTweaksButton_Click"/>
+                                <TextBlock Text="⚠ Requires administrator privileges"
+                                           Foreground="{StaticResource ErrorBrush}" FontSize="12"
+                                           Margin="0,10,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
